@@ -1,6 +1,8 @@
 import React, {ChangeEvent, FC } from "react";
 import {FilterType} from "./App";
 import {AddItemForm} from "./AddItemForm";
+import {NONAME} from "dns";
+import {EditableSpan} from "./EditableSpan";
 
 type Props = {
     title: string;
@@ -64,7 +66,8 @@ export const Todolist: FC<Props> = ({
                     return (
                         <li key={task.id}>
                             <input type="checkbox" checked={task.isDone} onChange={onChangeHandler}/>
-                            <span className={task.isDone ? "is-done" : ""}>{task.title}</span>
+                            {/*<span className={task.isDone ? "is-done" : ""}>{task.title}</span>*/}
+                            <EditableSpan value={task.title} />
                             <button onClick={onClickHandler}>✖</button>
                         </li>
                     )
