@@ -1,4 +1,5 @@
-import React, {ChangeEvent, FC, useState} from "react";
+import {ChangeEvent, FC, useState} from "react";
+import Button from '@mui/material/Button';
 
 type Props = {
     addItem: (taskTitle: string) => void;
@@ -30,7 +31,8 @@ export const AddItemForm: FC<Props> = ({ addItem }) => {
                 onChange={onChangeHandler}
                 onKeyDown={onKeyDownHandler}
             />
-            <button onClick={addTaskHandler}>+</button>
+            <Button variant="contained" color="primary" size="small"onClick={addTaskHandler}>+</Button>
+            {/*<button onClick={addTaskHandler}>+</button>*/}
             {error && <div className="error-message">error</div>}
         </div>
     )
