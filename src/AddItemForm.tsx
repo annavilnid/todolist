@@ -1,5 +1,7 @@
-import {ChangeEvent, FC, useState} from "react";
-import Button from '@mui/material/Button';
+import {ChangeEvent, KeyboardEvent, FC, useState} from "react";
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type Props = {
     addItem: (taskTitle: string) => void;
@@ -11,7 +13,7 @@ export const AddItemForm: FC<Props> = ({ addItem }) => {
     function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
         setTitle(e.currentTarget.value)
     }
-    function onKeyDownHandler(e: React.KeyboardEvent<HTMLInputElement>) {
+    function onKeyDownHandler(e: KeyboardEvent<HTMLInputElement>) {
         setError(null)
         e.key === "Enter" && addTaskHandler()
     }
@@ -25,15 +27,25 @@ export const AddItemForm: FC<Props> = ({ addItem }) => {
     }
     return (
         <div>
-            <input
-                className={error ? "error" : "" }
+            <TextField
+                id="outlined-error-helper-text"
+                error={!!error}
+                label="title"
+                helperText={error}
                 value={title}
                 onChange={onChangeHandler}
                 onKeyDown={onKeyDownHandler}
             />
-            <Button variant="contained" color="primary" size="small"onClick={addTaskHandler}>+</Button>
-            {/*<button onClick={addTaskHandler}>+</button>*/}
-            {error && <div className="error-message">error</div>}
+            {/*<input*/}
+            {/*    className={error ? "error" : "" }*/}
+            {/*    value={title}*/}
+            {/*    onChange={onChangeHandler}*/}
+            {/*    onKeyDown={onKeyDownHandler}*/}
+            {/*/>*/}
+            <IconButton color="success" onClick={addTaskHandler}>
+                <AddBoxIcon />
+            </IconButton>
+            {/*{error && <div className="error-message">error</div>}*/}
         </div>
     )
 }
