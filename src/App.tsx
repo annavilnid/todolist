@@ -24,10 +24,10 @@ export type TaskType = {
 export type TodolistType = {
     id: string;
     title: string;
-    filter: FilterType;
+    filter: Filter;
 };
 
-export type FilterType = "all" | "completed" | "active"
+export type Filter = "all" | "completed" | "active"
 
 function App() {
     let todolistID1 = v1()
@@ -72,12 +72,12 @@ function App() {
 
     function addItem(title: string) {
         const todolistId = v1();
-        const newTodolist = { id: todolistId, title: title, filter: "all" as FilterType };
+        const newTodolist = { id: todolistId, title: title, filter: "all" as Filter };
         setTodolists([newTodolist, ...todolists])
         setTasks({...tasks, [todolistId]: []});
     }
 
-    function changeFilter(titleId: string, filter: FilterType) {
+    function changeFilter(titleId: string, filter: Filter) {
         let todolist = todolists.find(t => t.id === titleId)
         if (todolist) {
             todolist.filter = filter
