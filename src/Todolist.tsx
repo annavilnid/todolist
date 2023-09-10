@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC } from "react";
+import React, {ChangeEvent, FC, useCallback, memo} from "react";
 import {Filter} from "./App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
@@ -26,7 +26,7 @@ type Props = {
     changeTodolistTitle: (todolistId: string, newTitle: string) => void
 };
 
-export const Todolist: FC<Props> = ({
+export const Todolist: FC<Props> = memo(({
                                         title,
                                         tasks,
                                         removeTask,
@@ -40,6 +40,7 @@ export const Todolist: FC<Props> = ({
                                         changeTodolistTitle,
 
 }) => {
+    console.log("Todolist called")
     function onClickAllHandler() {
         changeFilter(todolistId, "all")
     }
@@ -52,12 +53,22 @@ export const Todolist: FC<Props> = ({
         changeFilter(todolistId,"completed")
     }
 
-    function addItem(title: string) {
+    const addItem = useCallback((title: string)=> {
         addTask(todolistId, title)
-    }
+    }, [todolistId, addTask])
 
     function changeTitle(newTitle: string) {
         changeTodolistTitle(todolistId, newTitle)
+    }
+
+    let taskForTodolist = tasks
+
+    if (filter === "completed") {
+        taskForTodolist = tasks.filter(task => task.isDone)
+    }
+
+    if (filter === "active") {
+        taskForTodolist = tasks.filter(task => !task.isDone)
     }
 
     return (
@@ -71,7 +82,7 @@ export const Todolist: FC<Props> = ({
                 addItem={addItem}
             />
             <ul>
-                {tasks.map(task => {
+                {taskForTodolist.map(task => {
                     function onClickHandler() {
                         removeTask(todolistId, task.id)
                     }
@@ -106,4 +117,4 @@ export const Todolist: FC<Props> = ({
             </div>
         </div>
     )
-}
+})

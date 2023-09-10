@@ -1,4 +1,4 @@
-import {ChangeEvent, KeyboardEvent, FC, useState} from "react";
+import {ChangeEvent, KeyboardEvent, FC, useState, memo} from "react";
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -7,14 +7,17 @@ type Props = {
     addItem: (taskTitle: string) => void;
 };
 
-export const AddItemForm: FC<Props> = ({ addItem }) => {
+export const AddItemForm: FC<Props> = memo(({ addItem }) => {
+    console.log("AddItemForm called")
     const [error, setError] = useState<string | null>(null)
     const [title, setTitle] = useState<string>("")
     function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
         setTitle(e.currentTarget.value)
     }
     function onKeyDownHandler(e: KeyboardEvent<HTMLInputElement>) {
-        setError(null)
+        if (error !== null) {
+            setError(null)
+        }
         e.key === "Enter" && addTaskHandler()
     }
     function addTaskHandler() {
@@ -48,4 +51,4 @@ export const AddItemForm: FC<Props> = ({ addItem }) => {
             {/*{error && <div className="error-message">error</div>}*/}
         </div>
     )
-}
+})
