@@ -1,12 +1,11 @@
-import React, {ChangeEvent, FC, useCallback, memo} from "react";
+import {FC, useCallback, memo} from "react";
 import {Filter} from "./App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 import { Delete } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import {lightGreen, orange} from "@mui/material/colors";
+import {Task} from "./Task";
 
 type Props = {
     title: string;
@@ -41,17 +40,17 @@ export const Todolist: FC<Props> = memo(({
 
 }) => {
     console.log("Todolist called")
-    function onClickAllHandler() {
+    const onClickAllHandler = useCallback(()=> {
         changeFilter(todolistId, "all")
-    }
+    }, [changeFilter, todolistId])
 
-    function onClickActiveHandler() {
-        changeFilter(todolistId,"active")
-    }
+    const onClickActiveHandler = useCallback(()=> {
+        changeFilter(todolistId, "active")
+    }, [changeFilter, todolistId])
 
-    function onClickCompletedHandler() {
-        changeFilter(todolistId,"completed")
-    }
+    const onClickCompletedHandler = useCallback(()=> {
+        changeFilter(todolistId, "completed")
+    }, [changeFilter, todolistId])
 
     const addItem = useCallback((title: string)=> {
         addTask(todolistId, title)
@@ -83,30 +82,14 @@ export const Todolist: FC<Props> = memo(({
             />
             <ul>
                 {taskForTodolist.map(task => {
-                    function onClickHandler() {
-                        removeTask(todolistId, task.id)
-                    }
-                    function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
-                        const isDone = e.currentTarget.checked
-                        changeTasksStatus(todolistId, task.id, isDone)
-                    }
-
-                    function onChangeTaskTitle(newTitle: string) {
-                        changeTaskTitle(todolistId, task.id, newTitle)
-                    }
                     return (
-                        <li key={task.id} className={task.isDone ? "is-done" : ""}>
-                            <Checkbox sx={{
-                                color: orange[500],
-                                '&.Mui-checked': {
-                                    color: lightGreen[500],
-                                },
-                            }} checked={task.isDone} onChange={onChangeHandler}/>
-                            <EditableSpan onChange={onChangeTaskTitle} value={task.title} />
-                            <IconButton aria-label="delete" onClick={onClickHandler}>
-                                <Delete color="primary"/>
-                            </IconButton>
-                        </li>
+                        <Task key={task.id}
+                              todolistId={todolistId}
+                              task={task}
+                              removeTask={removeTask}
+                              changeTasksStatus={changeTasksStatus}
+                              changeTaskTitle={changeTaskTitle}
+                        />
                     )
                 })}
             </ul>
