@@ -17,7 +17,7 @@ type Props = {
     removeTask: (todolistId: string, taskId: string) => void;
     removeTodolist: (todolistId: string) => void
     addTask: (todolistId: string, taskTitle: string) => void;
-    changeTasksStatus: (todolistId: string, taskId: string, isDone: boolean) => void
+    changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
     changeFilter: (todolistId:string, filter: Filter) => void;
     todolistId: string;
     filter: Filter;
@@ -30,7 +30,7 @@ export const Todolist: FC<Props> = memo(({
                                         tasks,
                                         removeTask,
                                         addTask,
-                                        changeTasksStatus,
+                                        changeTaskStatus,
                                         changeFilter,
                                         filter,
                                         todolistId,
@@ -87,7 +87,7 @@ export const Todolist: FC<Props> = memo(({
                               todolistId={todolistId}
                               task={task}
                               removeTask={removeTask}
-                              changeTasksStatus={changeTasksStatus}
+                              changeTaskStatus={changeTaskStatus}
                               changeTaskTitle={changeTaskTitle}
                         />
                     )

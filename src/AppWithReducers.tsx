@@ -67,7 +67,7 @@ function AppWithReducer() {
         dispatchToTasks(addTaskAC({todolistId, taskTitle}))
     }
 
-    function changeTasksStatus(todolistId: string, taskId: string, isDone: boolean) {
+    function changeTaskStatus(todolistId: string, taskId: string, isDone: boolean) {
         dispatchToTasks(changeTaskStatusAC({todolistId, taskId, isDone}))
     }
 
@@ -140,7 +140,7 @@ function AppWithReducer() {
                                         todolistId={todolist.id}
                                         removeTask={removeTask}
                                         addTask={addTask}
-                                        changeTasksStatus={changeTasksStatus}
+                                        changeTaskStatus={changeTaskStatus}
                                         changeFilter={changeFilter}
                                         removeTodolist={removeTodolist}
                                         changeTaskTitle={changeTaskTitle}

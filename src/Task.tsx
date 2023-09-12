@@ -4,16 +4,13 @@ import { Delete } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {lightGreen, orange} from "@mui/material/colors";
+import {TaskType} from "./AppWithRedux";
 
 type Props = {
     todolistId: string;
-    task: {
-        id: string;
-        title: string;
-        isDone: boolean;
-    };
+    task: TaskType;
     removeTask: (todolistId: string, taskId: string) => void;
-    changeTasksStatus: (todolistId: string, taskId: string, isDone: boolean) => void
+    changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
     changeTaskTitle: (todolistId: string, taskId: string, newTitle: string) => void
 };
 
@@ -21,7 +18,7 @@ export const Task: FC<Props> = memo(({
                                          todolistId,
                                          task,
                                          removeTask,
-                                         changeTasksStatus,
+                                         changeTaskStatus,
                                          changeTaskTitle,
                                      }) => {
     console.log("Task called")
@@ -31,7 +28,7 @@ export const Task: FC<Props> = memo(({
     }
     function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
         const isDone = e.currentTarget.checked
-        changeTasksStatus(todolistId, task.id, isDone)
+        changeTaskStatus(todolistId, task.id, isDone)
     }
 
     const  onChangeTaskTitle = useCallback((newTitle: string) => {
