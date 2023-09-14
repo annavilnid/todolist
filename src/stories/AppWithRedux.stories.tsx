@@ -6,7 +6,7 @@ import { tasksReducer } from '../state/tasks-reducer';
 import {todolistsReducer} from "../state/todolists-reducer";
 import {v1} from "uuid";
 
-const rootReducer = combineReducers({
+let rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistsReducer
 })
