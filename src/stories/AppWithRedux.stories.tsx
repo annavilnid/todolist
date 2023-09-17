@@ -1,38 +1,23 @@
-import React from 'react'
-import {Provider} from "react-redux";
-import {AppRootStateType, store} from "../state/store";
-import {combineReducers, createStore, legacy_createStore} from "redux";
-import { tasksReducer } from '../state/tasks-reducer';
-import {todolistsReducer} from "../state/todolists-reducer";
-import {v1} from "uuid";
+import type {Meta, StoryObj} from '@storybook/react';
+import AppWithRedux from "../AppWithRedux";
+import {ReduxStoreProviderDecorator} from "./decorators/ReduxStoreProviderDecorator";
 
-let rootReducer = combineReducers({
-    tasks: tasksReducer,
-    todolists: todolistsReducer
-})
 
-const initialGlobalState = {
-    todolists: [
-        {id: "todolistId1", title: "What to learn", filter: "all"},
-        {id: "todolistId2", title: "What to buy", filter: "all"}
-    ] ,
-    tasks: {
-        ["todolistId1"]: [
-            {id: v1(), title: "HTML&CSS", isDone: true},
-            {id: v1(), title: "JS", isDone: false}
-        ],
-        ["todolistId2"]: [
-            {id: v1(), title: "Milk", isDone: false},
-            {id: v1(), title: "React Book", isDone: true}
-        ]
-    }
+// More on how to set up stories at:
+// https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<typeof AppWithRedux> = {
+    title: 'TODOLISTS/AppWithRedux',
+    component: AppWithRedux,
+    // This component will have an automatically generated Autodocs entry:
+    // https://storybook.js.org/docs/react/writing-docs/autodocs
+    tags: ['autodocs'],
+    // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
+    decorators: [ReduxStoreProviderDecorator]
 };
 
-export const storyBookStore = legacy_createStore(rootReducer, initialGlobalState as AppRootStateType);
+export default meta;
+type Story = StoryObj<typeof AppWithRedux>;
 
-
-export const ReduxStoreProviderDecorator = (storyFn: () => React.ReactNode) => {
-    return <Provider store={storyBookStore}>{storyFn()}</Provider>
-}
-
-
+// More on component templates:
+// https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+export const AppWithReduxStory: Story = {}
