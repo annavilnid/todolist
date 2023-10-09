@@ -39,6 +39,7 @@ export const AddItemForm: FC<Props> = memo(({ addItem }) => {
                 onChange={onChangeHandler}
                 onKeyDown={onKeyDownHandler}
             />
+            <p>22</p>
             {/*<input*/}
             {/*    className={error ? "error" : "" }*/}
             {/*    value={title}*/}
