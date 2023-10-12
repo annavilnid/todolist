@@ -30,14 +30,12 @@ export const AddItemForm: FC<Props> = memo(({ addItem }) => {
     }
     return (
         <div>
-            <p>test</p>
-            <p>test</p>
             <TextField
                 id="outlined-error-helper-text"
                 error={!!error}
                 label="title"
                 helperText={error}
-                value={title}
+                value={test}
                 onChange={onChangeHandler}
                 onKeyDown={onKeyDownHandler}
             />
