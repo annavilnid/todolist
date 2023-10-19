@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
 export default {
     title: 'API'
@@ -9,8 +10,10 @@ export const GetTodolists = () => {
     useEffect(() => {
         // здесь мы будем делать запрос и ответ закидывать в стейт.
         // который в виде строки будем отображать в div-ке
-
-    }, [])
+    const promise = axios.get("https://social-network.samuraijs.com/api/1.1");
+    promise.then((resData) =>
+        setState(resData)
+    )}, [])
     return <div>{JSON.stringify(state)}</div>
 }
 export const CreateTodolist = () => {
