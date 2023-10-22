@@ -27,15 +27,23 @@ export const CreateTodolist = () => {
 }
 export const DeleteTodolist = () => {
     const [state, setState] = useState<any>(null)
+    const todolistId = "096d5f7b-bf5e-4496-8c64-802cfdb7e2ed"
     useEffect(() => {
-    }, [])
+        const promise = axios.delete(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}`, {withCredentials: true});
+        promise.then((resData) =>
+            setState(resData.data.data)
+        )}, [])
 
     return <div>{JSON.stringify(state)}</div>
 }
 export const UpdateTodolistTitle = () => {
     const [state, setState] = useState<any>(null)
+    const todolistId = "792982a8-805d-4e9e-b58a-d2649d5a9050"
     useEffect(() => {
-    }, [])
+        const promise = axios.put(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}`, {title: 111}, {withCredentials: true});
+        promise.then((resData) =>
+            setState(resData.data.data)
+        )}, [])
 
     return <div>{JSON.stringify(state)}</div>
 }
