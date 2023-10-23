@@ -101,3 +101,5 @@ export const Todolist: FC<Props> = memo(({
         </div>
     )
 })
+
+export const test2 = "https://social-network.samuraijs.com/api/1.1/"
