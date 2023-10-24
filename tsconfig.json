@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+//    "baseUrl": "./src", // Укажите базовую директорию для алиасов
+//    "paths": {
+//      "src/*": ["*"]
+//    },
     "target": "es5",
     "lib": [
       "dom",
