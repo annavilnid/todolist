@@ -35,7 +35,6 @@ export const AddItemForm: FC<Props> = memo(({ addItem }) => {
                 error={!!error}
                 label="title"
                 helperText={error}
-                value={test}
                 onChange={onChangeHandler}
                 onKeyDown={onKeyDownHandler}
             />

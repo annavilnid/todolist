@@ -40,7 +40,7 @@ export const todolistsAPI = {
 export type TodolistType = {
     id: string
     title: string
-    addedDate: string
+    addedDate: Date
     order: number
 }
 export type ResponseType<D = {}> = {
@@ -71,20 +71,21 @@ export type TaskType = {
     title: string
     status: TaskStatuses
     priority: TaskPriorities
-    startDate: string
-    deadline: string
+    startDate: Date
+    deadline: Date
     id: string
     todoListId: string
     order: number
-    addedDate: string
+    addedDate: Date
 }
+
 export type UpdateTaskModelType = {
-    title: string
-    description: string
-    status: TaskStatuses
-    priority: TaskPriorities
-    startDate: string
-    deadline: string
+    title?: string
+    description?: string
+    status?: TaskStatuses
+    priority?: TaskPriorities
+    startDate?: Date
+    deadline?: Date
 }
 type GetTasksResponse = {
     error: string | null

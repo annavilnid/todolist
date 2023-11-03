@@ -4,22 +4,20 @@ import { Delete } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {lightGreen, orange} from "@mui/material/colors";
-import {TaskType} from "./AppWithRedux";
+import {TaskType, UpdateTaskModelType} from "./api/todolist-api";
 
 type Props = {
     todolistId: string;
     task: TaskType;
     removeTask: (todolistId: string, taskId: string) => void;
-    changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
-    changeTaskTitle: (todolistId: string, taskId: string, newTitle: string) => void
+    changeTask: (todolistId: string, taskId: string, updatedModelField: UpdateTaskModelType) => void
 };
 
 export const Task: FC<Props> = memo(({
                                          todolistId,
                                          task,
                                          removeTask,
-                                         changeTaskStatus,
-                                         changeTaskTitle,
+                                         changeTask,
                                      }) => {
     console.log("Task called")
 
@@ -28,21 +26,27 @@ export const Task: FC<Props> = memo(({
     }
     function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
         const isDone = e.currentTarget.checked
-        changeTaskStatus(todolistId, task.id, isDone)
+        console.log(isDone)
+        //TODO
+        const status = isDone ? 2 : 0
+        changeTask(todolistId, task.id, { status:  status})
     }
 
     const  onChangeTaskTitle = useCallback((newTitle: string) => {
-        changeTaskTitle(todolistId, task.id, newTitle)
-    }, [changeTaskTitle, todolistId, task.id])
+        changeTask(todolistId, task.id, {title: newTitle})
+    }, [changeTask, todolistId, task.id])
+
 
     return (
-        <li key={task.id} className={task.isDone ? "is-done" : ""}>
+        //Todo
+        //task.status === 2
+        <li key={task.id} className={task.status === 2 ? "is-done" : ""}>
             <Checkbox sx={{
                 color: orange[500],
                 '&.Mui-checked': {
                     color: lightGreen[500],
                 },
-            }} checked={task.isDone} onChange={onChangeHandler}/>
+            }} checked={task.status === 2} onChange={onChangeHandler}/>
             <EditableSpan onChange={onChangeTaskTitle} value={task.title}/>
             <IconButton aria-label="delete" onClick={onClickHandler}>
                 <Delete color="primary"/>

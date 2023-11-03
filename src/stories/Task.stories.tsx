@@ -13,10 +13,10 @@ const meta: Meta<typeof Task> = {
     // More on argTypes:
     // https://storybook.js.org/docs/react/api/argtypes
         args: {
-            changeTaskStatus: action('Status changed inside Task'),
-            changeTaskTitle: action('Title changed inside Task'),
+            //changeTaskStatus: action('Status changed inside Task'),
+            //changeTaskTitle: action('Title changed inside Task'),
             removeTask: action('Remove Button clicked changed inside Task'),
-            task: {id: '12wsdewfijdei', title: 'JS', isDone: false},
+            task: {id: '12wsdewfijdei', title: 'JS', status: 1, priority: 0, description: "test", addedDate: new Date(), startDate: new Date(), deadline: new Date(), todoListId: "todolistId1", order: 0},
             todolistId: 'fgdosrg8rgjuh'
         }
 };
@@ -29,6 +29,6 @@ type Story = StoryObj<typeof Task>;
 export const TaskStory: Story = {
     // More on args: https://storybook.js.org/docs/react/writing-stories/args
     args: {
-        task: {id: '12wsdewfijdei2343', title: 'CSS', isDone: true},
+        task: {id: '12wsdewfijdei2343', title: 'CSS', status: 2, priority: 0, description: "test", addedDate: new Date(), startDate: new Date(), deadline: new Date(), todoListId: "todolistId1", order: 0},
     },
 };
