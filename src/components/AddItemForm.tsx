@@ -5,9 +5,10 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type Props = {
     addItem: (taskTitle: string) => void;
+    disabled?: boolean;
 };
 
-export const AddItemForm: FC<Props> = memo(({ addItem }) => {
+export const AddItemForm: FC<Props> = memo(({ addItem, disabled = false }) => {
     console.log("AddItemForm called")
     const [error, setError] = useState<string | null>(null)
     const [title, setTitle] = useState<string>("")
@@ -30,7 +31,7 @@ export const AddItemForm: FC<Props> = memo(({ addItem }) => {
     }
     return (
         <div>
-            <TextField
+            <TextField disabled={disabled}
                 id="outlined-error-helper-text"
                 error={!!error}
                 label="title"
@@ -44,7 +45,7 @@ export const AddItemForm: FC<Props> = memo(({ addItem }) => {
             {/*    onChange={onChangeHandler}*/}
             {/*    onKeyDown={onKeyDownHandler}*/}
             {/*/>*/}
-            <IconButton color="success" onClick={addTaskHandler}>
+            <IconButton color="success" onClick={addTaskHandler} disabled={disabled}>
                 <AddBoxIcon />
             </IconButton>
             {/*{error && <div className="error-message">error</div>}*/}

@@ -2,7 +2,7 @@ import {useCallback, useEffect} from "react";
 import {useSelector} from "react-redux";
 import "./App.css";
 import {Todolist} from "../Todolist";
-import {AddItemForm} from "../AddItemForm";
+import {AddItemForm} from "../components/AddItemForm";
 import { ThemeProvider } from "@mui/material/styles";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -29,6 +29,7 @@ import {AppRootStateType, useAppDispatch} from "../state/store";
 import { TaskType, TodolistType, UpdateTaskModelType} from "../api/todolist-api";
 import {RequestStatusType} from "./app-reducer";
 import LinearProgress from "@mui/material/LinearProgress";
+import {ErrorSnackbar} from "../components/ ErrorSnackbar";
 
 // export type TaskType = {
 //     id: string;
@@ -45,9 +46,10 @@ import LinearProgress from "@mui/material/LinearProgress";
 export type Filter = "all" | "completed" | "active"
 
 function AppWithRedux() {
-    const todolists = useSelector<AppRootStateType, Array<TodolistType & {filter: Filter}>>(state => state.todolists)
+    const todolists = useSelector<AppRootStateType, Array<TodolistType & {filter: Filter, entityStatus: RequestStatusType}>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, {[key: string]: Array<TaskType>}>(state => state.tasks)
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+    const error = useSelector<AppRootStateType, null | string>(state => state.app.error)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -90,6 +92,7 @@ function AppWithRedux() {
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
+                {error && <ErrorSnackbar />}
                 <AppBar position="static">
                     <Toolbar>
                         <IconButton
@@ -121,6 +124,7 @@ function AppWithRedux() {
                                         title={todolist.title}
                                         tasks={tasks[todolist.id]}
                                         filter={todolist.filter}
+                                        entityStatus={todolist.entityStatus}
                                         todolistId={todolist.id}
                                         removeTask={removeTask}
                                         addTask={addTask}

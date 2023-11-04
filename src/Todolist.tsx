@@ -1,7 +1,7 @@
 import {FC, useCallback, memo, useEffect} from "react";
 import {Filter} from "./app/AppWithRedux";
-import {AddItemForm} from "./AddItemForm";
-import {EditableSpan} from "./EditableSpan";
+import {AddItemForm} from "./components/AddItemForm";
+import {EditableSpan} from "./components/EditableSpan";
 import { Delete } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -9,6 +9,7 @@ import {Task} from "./Task";
 import {useAppDispatch} from "./state/store";
 import {SetTasksTC} from "./state/tasks-reducer";
 import {TaskType, UpdateTaskModelType} from "./api/todolist-api";
+import {RequestStatusType} from "./app/app-reducer";
 
 type Props = {
     title: string;
@@ -20,22 +21,24 @@ type Props = {
     changeFilter: (todolistId:string, filter: Filter) => void;
     todolistId: string;
     filter: Filter;
+    entityStatus: RequestStatusType
     changeTodolistTitle: (todolistId: string, newTitle: string) => void
 };
 
 export const Todolist: FC<Props> = memo(({
-                                        title,
-                                        tasks,
-                                        removeTask,
-                                        addTask,
-                                        changeTask,
-                                        changeFilter,
-                                        filter,
-                                        todolistId,
-                                        removeTodolist,
-                                        changeTodolistTitle,
+                                             title,
+                                             tasks,
+                                             removeTask,
+                                             addTask,
+                                             changeTask,
+                                             changeFilter,
+                                             filter,
+                                             entityStatus,
+                                             todolistId,
+                                             removeTodolist,
+                                             changeTodolistTitle,
 
-}) => {
+                                         }) => {
     console.log("Todolist called")
     const dispatch = useAppDispatch()
 
@@ -75,15 +78,19 @@ export const Todolist: FC<Props> = memo(({
         taskForTodolist = tasks.filter(task => task.status !== 2)
     }
 
+    const disabled = entityStatus === "loading"
+    console.log(disabled)
+
     return (
         <div>
-            <h3><EditableSpan onChange={changeTitle} value={title} />
-            <IconButton aria-label="delete" onClick={()=>removeTodolist(todolistId)}>
+            <h3><EditableSpan onChange={changeTitle} value={title}/>
+            <IconButton aria-label="delete" onClick={()=>removeTodolist(todolistId)} disabled={disabled}>
                 <Delete />
             </IconButton>
             </h3>
             <AddItemForm
                 addItem={addItem}
+                disabled={disabled}
             />
             <ul>
                 {taskForTodolist?.map(task => {
@@ -93,6 +100,7 @@ export const Todolist: FC<Props> = memo(({
                               task={task}
                               removeTask={removeTask}
                               changeTask={changeTask}
+                              disabled={disabled}
                         />
                     )
                 })}

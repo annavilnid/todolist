@@ -1,5 +1,5 @@
 import {ChangeEvent, FC, memo, useCallback} from "react";
-import {EditableSpan} from "./EditableSpan";
+import {EditableSpan} from "./components/EditableSpan";
 import { Delete } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,6 +11,7 @@ type Props = {
     task: TaskType;
     removeTask: (todolistId: string, taskId: string) => void;
     changeTask: (todolistId: string, taskId: string, updatedModelField: UpdateTaskModelType) => void
+    disabled: boolean;
 };
 
 export const Task: FC<Props> = memo(({
@@ -18,6 +19,7 @@ export const Task: FC<Props> = memo(({
                                          task,
                                          removeTask,
                                          changeTask,
+                                         disabled
                                      }) => {
     console.log("Task called")
 
@@ -47,8 +49,8 @@ export const Task: FC<Props> = memo(({
                     color: lightGreen[500],
                 },
             }} checked={task.status === 2} onChange={onChangeHandler}/>
-            <EditableSpan onChange={onChangeTaskTitle} value={task.title}/>
-            <IconButton aria-label="delete" onClick={onClickHandler}>
+            <EditableSpan onChange={onChangeTaskTitle} value={task.title} />
+            <IconButton aria-label="delete" onClick={onClickHandler} disabled={disabled}>
                 <Delete color="primary"/>
             </IconButton>
         </li>

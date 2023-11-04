@@ -1,11 +1,11 @@
 import {v1} from "uuid";
 import {todolistsAPI, TodolistType, UpdateTaskModelType} from "../api/todolist-api";
 import {Dispatch} from "redux";
-import {ChangeStatusAC} from "../app/app-reducer";
+import {SetAppStatusAC, SetAppStatus, RequestStatusType} from "../app/app-reducer";
 
 type Filter = "all" | "completed" | "active"
 
-const initialState: Array<TodolistType & {filter: Filter}> = []
+const initialState: Array<TodolistType & {filter: Filter, entityStatus: RequestStatusType}> = []
 
 export type RemoveTodolistActionType = {
     type: "REMOVE-TODOLIST",
@@ -22,7 +22,7 @@ export type AddTodolistActionType = {
 }
 
 export type ChangeTitleTodolistActionType = {
-    type: "CHANGE-TODOLIST-TITLE",
+    type: "TODOLIST/CHANGE-TODOLIST-TITLE",
     payload: {
         todolistId: string,
         title: string,
@@ -30,7 +30,7 @@ export type ChangeTitleTodolistActionType = {
 }
 
 export type ChangeFilterTodolistActionType = {
-    type: "CHANGE-TODOLIST-FILTER",
+    type: "TODOLIST/CHANGE-TODOLIST-FILTER",
     payload: {
         todolistId: string,
         filter: Filter,
@@ -39,6 +39,8 @@ export type ChangeFilterTodolistActionType = {
 
 export type SetTodolistActionType = ReturnType<typeof SetTodolistAC>
 
+export type SetEntityStatusType = ReturnType<typeof SetEntityStatusAC>
+
 
 type ActionType =
     RemoveTodolistActionType
@@ -46,19 +48,23 @@ type ActionType =
     | ChangeTitleTodolistActionType
     | ChangeFilterTodolistActionType
     | SetTodolistActionType
+    | SetAppStatus
+    | SetEntityStatusType
 
-export const todolistsReducer = (state: Array<TodolistType & {filter: Filter}> = initialState, action: ActionType): Array<TodolistType & {filter: Filter}> => {
+export const todolistsReducer = (state: Array<TodolistType & {filter: Filter, entityStatus: RequestStatusType}> = initialState, action: ActionType): Array<TodolistType & {filter: Filter, entityStatus: RequestStatusType}> => {
     switch (action.type) {
-        case "SET-TODOLISTS":
-            return action.payload.todolists.map(t=>({...t, filter: "all"}))
+        case "TODOLIST/SET-TODOLISTS":
+            return action.payload.todolists.map(t=>({...t, filter: "all", entityStatus: "idle"}))
         case "REMOVE-TODOLIST":
             return state.filter(todolist => todolist.id !== action.payload.todolistId)
         case "ADD-TODOLIST":
-            return [{...action.payload.todolist, filter: "all"}, ...state]
-        case "CHANGE-TODOLIST-TITLE":
+            return [{...action.payload.todolist, filter: "all", entityStatus: "idle"}, ...state]
+        case "TODOLIST/CHANGE-TODOLIST-TITLE":
             return state.map(todolist => todolist.id === action.payload.todolistId ? {...todolist, title: action.payload.title}: todolist)
-        case 'CHANGE-TODOLIST-FILTER':
+        case 'TODOLIST/CHANGE-TODOLIST-FILTER':
             return state.map(todolist => todolist.id === action.payload.todolistId ? {...todolist, filter: action.payload.filter}: todolist)
+        case "TODOLIST/SET-ENTITY-STATUS":
+            return state.map(todolist => todolist.id === action.payload.todolistId ? {...todolist, entityStatus: action.payload.entityStatus}: todolist)
         default:
             return state
     }
@@ -74,47 +80,59 @@ export const AddTodolistAC = (payload: {todolist: TodolistType}): AddTodolistAct
 }
 
 export const ChangeTitleTodolistAC = (payload: { todolistId: string, title: string}): ChangeTitleTodolistActionType => {
-    return {type: "CHANGE-TODOLIST-TITLE", payload}
+    return {type: "TODOLIST/CHANGE-TODOLIST-TITLE", payload}
 }
 
 export const ChangeFilterTodolistAC = (payload: {todolistId: string, filter: Filter}): ChangeFilterTodolistActionType => {
-    return {type: "CHANGE-TODOLIST-FILTER", payload}
+    return {type: "TODOLIST/CHANGE-TODOLIST-FILTER", payload}
 }
 
-export const SetTodolistAC = (payload: {todolists: TodolistType[]}) => ({type: "SET-TODOLISTS", payload} as const)
+export const SetTodolistAC = (payload: {todolists: TodolistType[]}) => ({type: "TODOLIST/SET-TODOLISTS", payload} as const)
+
+export const SetEntityStatusAC = (payload: {todolistId: string, entityStatus: RequestStatusType}) => ({type: "TODOLIST/SET-ENTITY-STATUS", payload} as const)
 
 export const SetTodolistsTC = () => (dispatch: Dispatch) => {
-    dispatch(ChangeStatusAC({status: "loading"}))
     todolistsAPI.getTodolists()
         .then((resData) => {
             dispatch(SetTodolistAC({todolists: resData.data}))
-            dispatch(ChangeStatusAC({status: "succeeded"}))
+            dispatch(SetAppStatusAC({status: "succeeded"}))
         })
 }
 
 export const RemoveTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
+    dispatch(SetEntityStatusAC({todolistId, entityStatus: "loading"}))
+    dispatch(SetAppStatusAC({status: "loading"}))
     todolistsAPI.deleteTodolist(todolistId)
         .then((resData) => {
-            if (resData.data.resultCode === 0 ) {
+            if (resData.data.resultCode === 0) {
                 dispatch(RemoveTodolistAC({todolistId}))
+                dispatch(SetAppStatusAC({status: "succeeded"}))
             }
+            dispatch(SetEntityStatusAC({todolistId, entityStatus: "loading"}))
+        })
+        .catch((e) => {
+            dispatch(SetEntityStatusAC({todolistId, entityStatus: "loading"}))
         })
 }
 
 export const AddTodolistTC = (title: string) => (dispatch: Dispatch) => {
+    dispatch(SetAppStatusAC({status: "loading"}))
     todolistsAPI.createTodolist(title)
         .then((resData) => {
             if (resData.data.resultCode === 0 ) {
                 dispatch(AddTodolistAC({todolist: resData.data.data.item}))
+                dispatch(SetAppStatusAC({status: "succeeded"}))
             }
         })
 }
 
 export const ChangeTitleTodolistTC = (id: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(SetAppStatusAC({status: "loading"}))
     todolistsAPI.updateTodolist(id, title)
         .then((resData) => {
             if (resData.data.resultCode === 0 ) {
                 dispatch(ChangeTitleTodolistAC({todolistId: id, title}))
+                dispatch(SetAppStatusAC({status: "succeeded"}))
             }
         })
 }
