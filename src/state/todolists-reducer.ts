@@ -1,7 +1,9 @@
 import {v1} from "uuid";
-import {todolistsAPI, TodolistType, UpdateTaskModelType} from "../api/todolist-api";
+import {TaskType, todolistsAPI, TodolistType, UpdateTaskModelType} from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {SetAppStatusAC, SetAppStatus, RequestStatusType} from "../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../utils/utils-error";
+import {AxiosError} from "axios";
 
 type Filter = "all" | "completed" | "active"
 
@@ -92,10 +94,16 @@ export const SetTodolistAC = (payload: {todolists: TodolistType[]}) => ({type: "
 export const SetEntityStatusAC = (payload: {todolistId: string, entityStatus: RequestStatusType}) => ({type: "TODOLIST/SET-ENTITY-STATUS", payload} as const)
 
 export const SetTodolistsTC = () => (dispatch: Dispatch) => {
+    dispatch(SetAppStatusAC({status: "loading"}))
     todolistsAPI.getTodolists()
         .then((resData) => {
-            dispatch(SetTodolistAC({todolists: resData.data}))
-            dispatch(SetAppStatusAC({status: "succeeded"}))
+                dispatch(SetTodolistAC({todolists: resData.data}))
+                dispatch(SetAppStatusAC({status: "succeeded"}))
+        })
+        .catch((e: AxiosError<{ message: string }>) => {
+            const error = e.response?.data ? e.response?.data?.message : e.message
+            handleServerNetworkError({message: error}, dispatch)
+            dispatch(SetAppStatusAC({status: "failed"}))
         })
 }
 
@@ -107,11 +115,18 @@ export const RemoveTodolistTC = (todolistId: string) => (dispatch: Dispatch) => 
             if (resData.data.resultCode === 0) {
                 dispatch(RemoveTodolistAC({todolistId}))
                 dispatch(SetAppStatusAC({status: "succeeded"}))
+            } else {
+                handleServerAppError(resData.data, dispatch)
+                dispatch(SetAppStatusAC({status: "failed"}))
             }
-            dispatch(SetEntityStatusAC({todolistId, entityStatus: "loading"}))
         })
-        .catch((e) => {
-            dispatch(SetEntityStatusAC({todolistId, entityStatus: "loading"}))
+        .catch((e: AxiosError<{message: string}>) => {
+            const error = e.response?.data ? e.response?.data?.message : e.message
+            handleServerNetworkError({message: error},dispatch)
+            dispatch(SetAppStatusAC({status: "failed"}))
+        })
+        .finally(()=> {
+            dispatch(SetEntityStatusAC({todolistId, entityStatus: "idle"}))
         })
 }
 
@@ -122,7 +137,15 @@ export const AddTodolistTC = (title: string) => (dispatch: Dispatch) => {
             if (resData.data.resultCode === 0 ) {
                 dispatch(AddTodolistAC({todolist: resData.data.data.item}))
                 dispatch(SetAppStatusAC({status: "succeeded"}))
+            } else {
+                handleServerAppError<{ item: TodolistType }>(resData.data, dispatch)
+                dispatch(SetAppStatusAC({status: "failed"}))
             }
+        })
+        .catch((e: AxiosError<{message: string}>) => {
+            const error = e.response?.data ? e.response?.data?.message : e.message
+            handleServerNetworkError({message: error},dispatch)
+            dispatch(SetAppStatusAC({status: "failed"}))
         })
 }
 
@@ -133,6 +156,14 @@ export const ChangeTitleTodolistTC = (id: string, title: string) => (dispatch: D
             if (resData.data.resultCode === 0 ) {
                 dispatch(ChangeTitleTodolistAC({todolistId: id, title}))
                 dispatch(SetAppStatusAC({status: "succeeded"}))
+            } else {
+                handleServerAppError(resData.data, dispatch)
+                dispatch(SetAppStatusAC({status: "failed"}))
             }
+        })
+        .catch((e: AxiosError<{ message: string }>) => {
+            const error = e.response?.data ? e.response?.data?.message : e.message
+            handleServerNetworkError({message: error}, dispatch)
+            dispatch(SetAppStatusAC({status: "failed"}))
         })
 }
