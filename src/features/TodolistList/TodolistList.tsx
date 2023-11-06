@@ -13,7 +13,7 @@ import {
     SetTodolistsTC
 } from "../../state/todolists-reducer";
 import {AddTaskTC, RemoveTaskTC, UpdateTaskTC} from "../../state/tasks-reducer";
-import {Todolist} from "../../Todolist";
+import {Todolist} from "src/features/TodolistList/Todolist/Todolist";
 import {AddItemForm} from "../../components/AddItemForm";
 
 
